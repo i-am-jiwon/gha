@@ -216,7 +216,7 @@ resource "aws_instance" "ec2_1" {
   user_data = <<-EOF
 ${local.ec2_user_data_base}
 
-mkdir -p /docker_projects/gha/source
+mkdir -p /docker_projects/gha_1/source
 cd /docker_projects/gha_1/source
 git clone https://github.com/i-am-jiwon/gha .
 
