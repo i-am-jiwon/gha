@@ -225,16 +225,16 @@ cd /docker_projects/gha_1/source
 git clone https://github.com/i-am-jiwon/gha .
 
 # 도커 이미지 생성
-docker build -t gha:1 .
+docker build -t gha_1:1 .
 
 # 생성된 이미지 실행
 docker run \
-    --name=gha_1 \
+    --name=gha_1_1 \
     -p 8080:8080 \
     -v /docker_projects/gha_1/volumes/gen:/gen \
     --restart unless-stopped \
     -e TZ=Asia/Seoul \
     -d \
-    gha:1
+    gha_1:1
 EOF
 }
