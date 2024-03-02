@@ -81,7 +81,7 @@ jobs:
           comment: Deploy
           command: |
             # 기존에 실행된 컨테이너 제거
-              docker stop gha_1
+              docker stop gha_1_1
               docker rm gha_1_1
   
               # 새 도커 이미지 PULL
