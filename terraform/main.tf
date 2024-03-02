@@ -225,7 +225,7 @@ docker build -t gha:1 .
 
 # 생성된 이미지 실행
 docker run \
-    --name=sb_2024_02_29_1_1 \
+    --name=gha_1 \
     -p 8080:8080 \
     -v /docker_projects/gha_1/volumes/gen:/gen \
     --restart unless-stopped \
