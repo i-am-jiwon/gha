@@ -168,6 +168,8 @@ locals {
 #!/bin/bash
 yum install python -y
 
+yum install socat -y
+
 yum install docker -y
 systemctl enable docker
 systemctl start docker
