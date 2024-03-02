@@ -14,7 +14,7 @@ public class HomeController {
     @GetMapping("/")
     @ResponseBody
     public String showMain() {
-        return "sss";
+        return "change";
     }
 
 
