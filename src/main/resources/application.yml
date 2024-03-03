@@ -4,3 +4,13 @@ spring:
   profiles:
     active: dev
     include: secret
+  data:
+    redis:
+      host: 43.202.55.165
+      port: 6379
+      password: ON_SECRET
+  datasource:
+    url: jdbc:mysql://43.202.55.165:3306/gha_prod
+    username: root
+    password: ON_SECRET
+    driver-class-name: com.mysql.cj.jdbc.Driver
