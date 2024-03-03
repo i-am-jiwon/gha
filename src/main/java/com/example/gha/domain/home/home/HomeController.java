@@ -14,7 +14,7 @@ public class HomeController {
     @GetMapping("/")
     @ResponseBody
     public String showMain() {
-        return "step 22";
+        return "redis";
     }
 
 
