@@ -166,6 +166,14 @@ resource "aws_iam_instance_profile" "instance_profile_1" {
 locals {
   ec2_user_data_base = <<-END_OF_FILE
 #!/bin/bash
+sudo dd if=/dev/zero of=/swapfile bs=128M count=32
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+sudo swapon -s
+sudo sh -c 'echo "/swapfile swap swap defaults 0 0" >> /etc/fstab'
+
+
 yum install python -y
 yum install pip -y
 pip install requests
@@ -178,14 +186,26 @@ systemctl start docker
 curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
+docker run --name mysql_1 \
+    -e MYSQL_ROOT_PASSWORD=1234 \
+    -e TZ=Asia/Seoul \
+    -d \
+    -p 3306:3306 \
+    -v /docker_projects/mysql_1/volumns/var/lib/mysql:/var/lib/mysql \
+    --restart unless-stopped \
+    mysql \
+    --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+docker run \
+  --name=redis_1 \
+  --restart unless-stopped \
+  -p 6379:6379 \
+  -e TZ=Asia/Seoul \
+  -d \
+  redis
+
 yum install git -y
 
-sudo dd if=/dev/zero of=/swapfile bs=128M count=32
-sudo chmod 600 /swapfile
-sudo mkswap /swapfile
-sudo swapon /swapfile
-sudo swapon -s
-sudo sh -c 'echo "/swapfile swap swap defaults 0 0" >> /etc/fstab'
+
 
 END_OF_FILE
 }
@@ -221,21 +241,10 @@ resource "aws_instance" "ec2_1" {
   user_data = <<-EOF
 ${local.ec2_user_data_base}
 
-mkdir -p /docker_projects/gha_1/source
-cd /docker_projects/gha_1/source
-git clone https://github.com/i-am-jiwon/gha .
+mkdir -p /docker_projects/gha
+curl -o /docker_projects/gha/zero_downtime_deploy.py https://raw.githubusercontent.com/i-am-jiwon/gha/main/infraScript/zero_downtime_deploy.py
+chmod +x /docker_projects/gha/zero_downtime_deploy.py
+/docker_projects/gha/zero_downtime_deploy.py
 
-# 도커 이미지 생성
-docker build -t gha_1:1 .
-
-# 생성된 이미지 실행
-docker run \
-    --name=gha_1_1 \
-    -p 8080:8080 \
-    -v /docker_projects/gha_1/volumes/gen:/gen \
-    --restart unless-stopped \
-    -e TZ=Asia/Seoul \
-    -d \
-    gha_1:1
 EOF
 }
